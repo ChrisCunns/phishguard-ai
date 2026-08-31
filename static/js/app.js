@@ -122,6 +122,14 @@ async function analyzeEmail() {
             </p>
         `;
 
+        html += `
+            <button
+                class="secondary"
+                onclick="askCoach()">
+                🎓 Ask the Awareness Coach
+            </button>
+        `;
+
         if (result.score >= 60) {
 
             html += `
@@ -142,6 +150,113 @@ async function analyzeEmail() {
 
         document.getElementById("results").innerHTML =
             "<div class='flag'>Error connecting to server.</div>";
+    }
+}
+
+
+async function askCoach() {
+
+    const email =
+        document.getElementById("emailInput").value;
+
+    if (email.trim() === "") {
+        alert("Please paste an email before asking the coach.");
+        return;
+    }
+
+    const resultsDiv = document.getElementById("results");
+
+    resultsDiv.innerHTML += `
+        <div class="success-box">
+            <h3>🎓 Awareness Coach</h3>
+            <p>Generating a question... (this uses AI and may take a moment)</p>
+        </div>
+    `;
+
+    try {
+
+        const response = await fetch("/coach", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.error) {
+            resultsDiv.innerHTML += `
+                <div class="flag">
+                    ${result.error}
+                </div>
+            `;
+            return;
+        }
+
+        let html = `
+            <div class="success-box">
+                <h3>🎓 Awareness Coach</h3>
+                <p><strong>${result.question}</strong></p>
+            </div>
+        `;
+
+        result.options.forEach((option, index) => {
+            html += `
+                <div
+                    class="coach-option"
+                    id="coach-opt-${index}"
+                    onclick="selectCoachAnswer(${index}, ${result.correct_index})">
+                    ${option}
+                </div>
+            `;
+        });
+
+        html += `
+            <div id="coach-feedback" class="coach-feedback"></div>
+        `;
+
+        resultsDiv.innerHTML += html;
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        resultsDiv.innerHTML += `
+            <div class="flag">Error connecting to the awareness coach.</div>
+        `;
+    }
+}
+
+
+function selectCoachAnswer(selected, correct) {
+
+    const feedback = document.getElementById("coach-feedback");
+
+    if (selected === correct) {
+
+        document.getElementById(`coach-opt-${selected}`).classList.add("correct");
+
+        feedback.innerHTML = `
+            <div class="success-box">
+                <h3>✅ Correct!</h3>
+            </div>
+        `;
+
+    } else {
+
+        document.getElementById(`coach-opt-${selected}`).classList.add("wrong");
+        document.getElementById(`coach-opt-${correct}`).classList.add("correct");
+
+        feedback.innerHTML = `
+            <div class="success-box">
+                <h3>❌ Not quite.</h3>
+                <p>The correct answer is highlighted green.</p>
+            </div>
+        `;
     }
 }
 

@@ -112,3 +112,31 @@ button{
     background:rgba(52,211,153,.1);
     border-radius:8px;
 }
+
+.coach-option{
+    padding:12px 14px;
+    margin:8px 0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--bg);
+    cursor:pointer;
+    transition:background .15s;
+}
+
+.coach-option:hover{
+    background:rgba(242,169,59,.12);
+}
+
+.coach-option.correct{
+    border-left:4px solid var(--good);
+    background:rgba(52,211,153,.12);
+}
+
+.coach-option.wrong{
+    border-left:4px solid var(--bad);
+    background:rgba(239,68,68,.1);
+}
+
+.coach-feedback{
+    margin-top:10px;
+}
