@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            <div>
+                  <p>PhishGuard-AI Employee Email Threat Assessment Platform</p>
+            </div>
+
+            <button class="secondary" onclick="toggleTheme()">
+                🌙 Toggle Theme
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Submit Suspicious Email</h2>
+
+            <textarea id="emailInput"
+                      placeholder="Paste email here..."></textarea>
+
+            <br>
+
+            <button class="primary" onclick="analyzeEmail()">
+                Analyze Email
+            </button>
+
+            <button class="secondary" onclick="loadGoodSample()">
+                ✓ Load Good Sample
+            </button>
+
+            <button class="secondary" onclick="loadBadSample()">
+                ✗ Load Bad Sample
+            </button>
+
+            <button class="secondary" onclick="resetForm()">
+                Reset
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Threat Assessment</h2>
+
+            <div id="results">
+                No analysis yet.
+            </div>
+
+        </div>
+
+    </div>
+
+     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
