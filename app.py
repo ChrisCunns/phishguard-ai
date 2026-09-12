@@ -90,16 +90,26 @@ the "options" array.
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=400,
+            max_tokens=600,
+            response_format={"type": "json_object"},
         )
 
         raw = completion.choices[0].message.content.strip()
 
         # Strip any surrounding markdown fences if the model adds them
         if raw.startswith("```"):
-            raw = raw.strip("`")
-            if raw.startswith("json"):
-                raw = raw[4:]
+            lines = raw.splitlines()
+            if lines and lines[0].lstrip().startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].strip().startswith("```"):
+                lines = lines[:-1]
+            raw = "\n".join(lines).strip()
+
+        # Find the first '{' and last '}' to isolate JSON
+        start = raw.find("{")
+        end = raw.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            raw = raw[start:end + 1]
 
         coach = json.loads(raw)
 
